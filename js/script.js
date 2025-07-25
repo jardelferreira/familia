@@ -5,10 +5,10 @@
  */
 
 // ===== CONFIGURAÇÕES E CONSTANTES =====
-const APP_NAME = "cincoestrelas";
+const APP_NAME = "familia";
 const CONFIG = {
     APP_NAME: APP_NAME,
-    DB_NAME: "cincoestrelas_mobilidadeDB",
+    DB_NAME: "familia_mobilidadeDB",
     DB_VERSION: 2,
     STORES: {
         LOCALIDADES: "localidades",
