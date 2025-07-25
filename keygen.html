@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Criptografar Senha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 1rem;
+            display: block;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.7rem;
+            margin-top: 0.3rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.7rem;
+            margin-top: 0.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #2b74f2;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #195ee0;
+        }
+
+        .secondary {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .secondary:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Criptografar Senha</h2>
+
+        <label for="senha">Senha original:</label>
+        <input type="text" id="senha" placeholder="Digite sua senha..." />
+
+        <label for="resultado">Senha criptografada:</label>
+        <textarea id="resultado" rows="3" readonly placeholder="Resultado aparecerá aqui..."></textarea>
+
+        <button onclick="criptografar()">Criptografar</button>
+        <button class="secondary" onclick="copiar()">Copiar</button>
+        <button class="secondary" onclick="compartilhar()">Compartilhar via WhatsApp</button>
+    </div>
+
+    <script type="module">
+        import { encrypt, decrypt} from './encript.js';
+        window.encrypt = encrypt;
+        window.decrypt = decrypt;
+
+    </script>
+    <script>
+        
+        async function criptografar() {
+            const senha = document.getElementById("senha").value.trim();
+            if (!senha) return alert("Digite uma senha primeiro!");
+            if(senha.length < 6) return alert("A senha deve ter pelo menos 6 caracteres.");
+            try {
+                const cipherIv = await encrypt(senha);
+                document.getElementById("resultado").value = cipherIv;
+            } catch (err) {
+                alert("Erro ao criptografar: " + err.message);
+            }
+        }
+
+        function copiar() {
+            const output = document.getElementById("resultado");
+            output.select();
+            output.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("Texto copiado!");
+        }
+
+        function compartilhar() {
+            const texto = document.getElementById("resultado").value.trim();
+            if (!texto) return alert("Nada para compartilhar.");
+            const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
+        }
+
+    </script>
+</body>
+
+</html>

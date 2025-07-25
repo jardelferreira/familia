@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Minificador de JSON</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #4a90e2;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      max-width: 600px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      margin: 10px 0;
+    }
+
+    button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #357ab8;
+    }
+
+    pre#jsonView {
+      background-color: #272822;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 100%;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Minificador de JSON</h2>
+
+  <div class="card">
+    <input type="file" id="jsonInput" accept=".json">
+    <button onclick="minificarJSON()">Minificar e Baixar</button>
+  </div>
+
+  <div class="card">
+    <input type="file" id="jsonOutput" accept=".json,.txt">
+    <button onclick="exibirJSON()">Exibir JSON</button>
+    <div id="jsonView">⏳ Aguarde o JSON ser exibido aqui...</div>
+
+  </div>
+
+  <script>
+    function minificarJSON() {
+      const input = document.getElementById('jsonInput');
+      const file = input.files[0];
+
+      if (!file) {
+        alert('Por favor, selecione um arquivo JSON.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          const compactado = JSON.stringify(parsed); // minificado
+
+          const blob = new Blob([compactado], { type: 'text/plain;charset=utf-8' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'json_minificado.txt';
+          link.click();
+        } catch (erro) {
+          alert('Erro ao processar o JSON: ' + erro.message);
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    function exibirJSON() {
+      const input = document.getElementById('jsonOutput');
+      const file = input.files[0];
+
+      if (!file) {
+        alert('Por favor, selecione um arquivo para exibição.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const json = JSON.parse(e.target.result);
+          const container = document.getElementById('jsonView');
+          container.innerHTML = ''; // Limpa conteúdo anterior
+
+          const lista = criarLista(json);
+          container.appendChild(lista);
+        } catch (erro) {
+          alert('Erro ao exibir o JSON: ' + erro.message);
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    function criarLista(obj) {
+      const ul = document.createElement('ul');
+
+      for (const chave in obj) {
+        const li = document.createElement('li');
+
+        if (typeof obj[chave] === 'object' && obj[chave] !== null) {
+          li.innerHTML = `<strong>${chave}:</strong>`;
+          li.appendChild(criarLista(obj[chave])); // recursão
+        } else {
+          li.innerHTML = `<strong>${chave}:</strong> ${obj[chave]}`;
+        }
+
+        ul.appendChild(li);
+      }
+
+      return ul;
+    }
+
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,302 @@
+.select2-container--bootstrap-custom .select2-selection--single {
+    height: 50px !important;
+    border: 2px solid var(--primary-light);
+    border-radius: 8px;
+    background-color: white;
+    transition: var(--transition);
+    padding-left: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.select2-container--bootstrap-custom .select2-selection--single .select2-selection__rendered {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 48px;
+}
+
+.select2-container--bootstrap-custom.select2-container--focus .select2-selection--single {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.15);
+}
+
+.select2-container--bootstrap-custom .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    right: 10px;
+}
+.select2-container--bootstrap-custom .select2-selection__arrow {
+  height: 100%;
+  width: 2rem;
+  right: 0.5rem;
+  top: 0;
+  position: absolute;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1.5em 1.5em;
+  pointer-events: none;
+}
+
+.select2-container--bootstrap-custom .select2-dropdown {
+    border: 2px solid var(--primary-light);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.select2-container--bootstrap-custom .select2-results__option--highlighted {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.select2-container--bootstrap-custom .select2-results__option {
+    padding: 0.5rem 1rem;
+}
+
+.select2-results__option {
+    border: 1px solid var(--primary-light) !important;
+}
+
+:root {
+    --primary-color: #3B82F6;
+    --primary-dark: #2563EB;
+    --primary-light: #93C5FD;
+}
+
+.primary-bg {
+    background-color: var(--primary-color);
+}
+
+.primary-border {
+    border-color: var(--primary-color);
+}
+
+.primary-text {
+    color: var(--primary-color);
+}
+
+.primary-bg-light {
+    background-color: var(--primary-light);
+}
+
+.theme-blue {
+    --primary-color: #3B82F6;
+    --primary-dark: #2563EB;
+    --primary-light: #93C5FD;
+}
+
+.theme-green {
+    --primary-color: #10B981;
+    --primary-dark: #059669;
+    --primary-light: #6EE7B7;
+}
+
+.theme-purple {
+    --primary-color: #8B5CF6;
+    --primary-dark: #7C3AED;
+    --primary-light: #C4B5FD;
+}
+
+.theme-red {
+    --primary-color: #EF4444;
+    --primary-dark: #DC2626;
+    --primary-light: #FCA5A5;
+}
+
+.theme-orange {
+    --primary-color: #F59E0B;
+    --primary-dark: #D97706;
+    --primary-light: #FCD34D;
+}
+
+.theme-orange2{
+    --primary-color: #EC2C04;
+    --primary-dark: #E04000;
+    --primary-light: #F5A623;
+}
+
+.theme-yellow {
+    --primary-color: #FFC107;
+    --primary-dark: #E67E22;
+    --primary-light: #FFF37F;
+}
+
+.theme-gray {
+    --primary-color: #636e72;
+    --primary-dark: #455a64;
+    --primary-light: #808080;
+}
+
+.theme-pink{
+    --primary-color: #F81894;
+    --primary-dark: #FF0090;
+    --primary-light: #FF6FFF;
+}
+.theme-dark{
+    --primary-color: #111213;
+    --primary-dark: #1e1e1e;
+    --primary-light: #34495e;
+}
+
+.theme-default{
+    --primary-color: #EC2C04;
+    --primary-dark: #E04000;
+    --primary-light: #F5A623;
+}
+
+.gradient-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+}
+
+.glass-effect {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.floating-card {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pulse-btn {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .8;
+    }
+}
+
+.custom-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+}
+
+.checkbox-custom {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    background-color: white;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.checkbox-custom:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkbox-custom:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.whatsapp-btn {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+    transition: all 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(37, 211, 102, 0.4);
+}
+
+.logo-placeholder {
+    /* background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); */
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #333;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  z-index: 9999;
+}
+.toast.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-10px);
+}
+.toast.success {
+  background-color: #28a745;    
+}
+.toast.error {
+  background-color: #dc3545;
+}
+
+#preloader {
+  position: fixed;
+  inset: 0;
+  background-color: white;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}

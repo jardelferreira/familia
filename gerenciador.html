@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Localidades e Rotas</title>
+    <link rel="stylesheet" href="/css/all.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.4/css/buttons.dataTables.css"> -->
+    <link rel="stylesheet" href="/css/gerenciador.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body>
+    <script>
+        const url = window.location;
+        window.baseUrl = url.origin + url.pathname.replace(/[^\/]*$/, '');
+        if (localStorage.getItem('logado') != 'true') {
+            location.href = `${window.baseUrl}login.html`;
+        }
+    </script>
+    <div class="app-container">
+        <div class="header">
+            <div style="display: inline-block; width: 90%;">
+                <div style="display: block;">
+                    <h1>Gerenciador Avançado</h1>
+                    <p>Sistema de gestão de localidades e rotas</p>
+                </div>
+                <button class="btn btn-danger" onclick="logout()">Sair</button>
+                <button class="btn btn-primary" onclick="limparTudoERecarregar()">Recarregar</button>
+            </div>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs" id="tabsContainer">
+                <button class="tab active" data-tab="localidades">
+                    📍 Localidades
+                </button>
+                <button class="tab" data-tab="rotas">
+                    🛣️ Rotas
+                </button>
+                <!-- Exemplo de como adicionar novas abas -->
+                <button class="tab" data-tab="usuarios">
+                    👥 Usuários
+                </button>
+                <button class="tab" data-tab="adicionais">
+                    ➕ Adicionais
+                </button>
+                <button class="tab" data-tab="relatorios">
+                    📊 Relatórios
+                </button>
+                <a id="registrar_link" target="_blank"
+                    style="margin-top: 20px; margin-bottom: 20px; color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; ">Registrar
+                </a>
+                <a id="senha_link" target="_blank" href="/keygen.html"
+                    style="margin-top: 20px; margin-left: 20px; margin-bottom: 20px; color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; ">Gerar
+                    senha </a>
+            </div>
+            <div class="tab-indicator" id="tabIndicator"></div>
+        </div>
+
+        <div class="content-container">
+            <div id="localidades" class="tab-content active">
+                <h2 class="section-title">Gerenciar Localidades</h2>
+                <div class="table-container">
+                    <table id="tabelaLocalidades" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Local</th>
+                                <th>Bairro</th>
+                                <th>Cidade</th>
+                                <th>UF</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="rotas" class="tab-content">
+                <h2 class="section-title">Gerenciar Rotas</h2>
+                <div class="accordion mb-2  " id="searchAccordion">
+                    <div id="searchCollapse" class="collapse" aria-labelledby="searchHeading"
+                        data-parent="#searchAccordion">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4 form-group">
+                                    <label for="origem-search">Origem:</label>
+                                    <input type="text" class="form-control" name="origem-search" id="origem-search"
+                                        placeholder="Filtrar por origem">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="destino-search">Destino:</label>
+                                    <input type="text" class="form-control" name="destino-search" id="destino-search"
+                                        placeholder="Filtrar por destino">
+                                </div>
+                                <!-- <div class="col-md-4 form-group d-none">
+                                <label for="role-search">Role:</label>
+                                <input type="text" class="form-control" name="role-search" id="role-search"
+                                    placeholder="Search by Role">
+                            </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="tabelaRotas" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th data-search="origem-search">Origem</th>
+                                <th data-search="destino-search">Destino</th>
+                                <th>Valor</th>
+                                <th>Reversa</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="usuarios" class="tab-content">
+                <h2 class="section-title">Gerenciar Usuários</h2>
+                <div class="table-container">
+                    <table id="tabelaUsuarios" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>João Silva</td>
+                                <td>joao@email.com</td>
+                                <td>Admin</td>
+                                <td>Ativo</td>
+                                <td>
+                                    <div class="actions">
+                                        <button class="btn btn-primary">Editar</button>
+                                        <button class="btn btn-success">Perfil</button>
+                                        <button class="btn btn-danger">Desativar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="adicionais" class="tab-content">
+                <h2 class="section-title">Gerenciar Adicionais</h2>
+                <div class="accordion mb-2  " id="addAccordion">
+                    <div id="addCollapse" class="collapse" aria-labelledby="addHeading" data-parent="#addAccordion">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label for="nome-adicional">Nome:</label>
+                                    <input type="text" class="form-control" name="nome-adicional" id="nome-adicional"
+                                        placeholder="Nome do adicional">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="valor-adicional">Valor:</label>
+                                    <input type="number" class="form-control" name="valor-adicional"
+                                        id="valor-adicional" placeholder="10.00">
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label for="operacao-adicional">Operação:</label>
+                                    <select name="operacao-adicional" id="operacao-adicional" class="form-control">
+                                        <option value="+">Adicionar</option>
+                                        <option value="-">Descontar</option>
+                                        <option value="%">Porcentagem</option>
+                                        <option value="*">Multiplicar</option>
+                                        <option value="/">Dividir</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" style="width: 500px;">
+                                    <label for="descricao-adicional">Descrição:</label>
+                                    <input type="text" class="form-control" name="descricao-adicional"
+                                        id="descricao-adicional" placeholder="Descrição do adicional">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <button class="btn btn-primary" onclick="criarAdicional()">Criar Adicional</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="tabelaAdicionais" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Ícone</th>
+                                <th>Operação</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="relatorios" class="tab-content">
+                <h2 class="section-title">Relatórios e Análises</h2>
+                <div class="table-container">
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;">📊</div>
+                        <h3>Relatórios em Desenvolvimento</h3>
+                        <p>Esta seção estará disponível em breve com gráficos e análises detalhadas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.4/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.4/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.4/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.4/js/buttons.print.min.js"></script>
+    <script>
+        $(document).ready(async function () {
+            let expire = new Date(localStorage.getItem('expire_at'));
+            localStorage.setItem('expire_at', expire.toISOString());
+            document.getElementById('registrar_link').href = `/register.html?invite_id=123456&expire_at=${expire.toISOString()}`;
+            setInterval(() => {
+                expire = localStorage.getItem('expire_at');
+                if (expire) {
+                    const now = new Date();
+                    const expireDate = new Date(expire);
+                    if (now > expireDate) {
+                        localStorage.removeItem('expire_at');
+                        alert("Sessão expirada. Faça login novamente.");
+                        location.href = `${window.baseUrl}login.html`;
+                    }
+                }
+            }, 60000); // Verifica a cada 60 segundos
+            // Configuração das DataTables
+            window.LOCALIDADES = await fetch(`https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=localidades`).then(response => response.json());
+            window.LOCALIDADES = window.LOCALIDADES.filter(l => l.ID != "")
+            ghUrl = 'https://cdn.jsdelivr.net/gh/jardelferreira/cincoestrelas@main'
+            window.ROTAS = await fetch(`/novas_rotas_1753381378720.json`).then(response => response.json());
+            add = await fetch(`https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=getAdicionais&nocache=${Date.now()}`).then(response => response.json());
+            window.ADICIONAIS = JSON.parse(add.data);
+            window.rotasLista = [];
+            ROTAS.forEach(function (rotas) {
+                if (Array.isArray(rotas.r)) {
+                    rotas.r.forEach(function (destinoRota) {
+                        window.rotasLista.push({
+                            origem_id: rotas.i,
+                            destino_id: destinoRota[0],
+                            origem: enderecoLocalidade(LOCALIDADES.find(l => l.ID == rotas.i)),
+                            destino: enderecoLocalidade(LOCALIDADES.find(l => l.ID == destinoRota[0])),
+                            v: destinoRota[1],
+                            r: !!destinoRota[2]
+                        });
+                    });
+                }
+            });
+
+            const dtLanguage = await fetch(`/js/datatable_pt-BR.json`).then(response => response.json());
+
+            const tableConfig = {
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [5, 10, 25, 50],
+                pagingType: 'simple_numbers',
+                language: dtLanguage,
+            };
+
+            // Inicializar DataTables
+            window.tables = {
+                rotas: $('#tabelaRotas').DataTable({
+                    ...tableConfig,
+                    data: rotasLista,
+                    responsive: true,
+                    searching: true,
+                    columns: [
+                        { data: 'origem', className: 'nowrap' },
+                        { data: 'destino', className: 'nowrap' },
+                        {
+                            data: {
+                                valor: 'valor',
+                                origem: 'origem_id',
+                                destino: 'destino_id',
+                            }, render: function (data, type, row) {
+                                return `<input type="text" onchange="exibirElemento('salve-${data.origem_id}-${data.destino_id}')"
+                                class="form-control" name="${data.origem_id}-${data.destino_id}-valor" id="${data.origem_id}-${data.destino_id}-valor" value="${data.v}"></input>`;
+                            }
+                        },
+                        {
+                            data: {
+                                reverse: 'reverse',
+                                origem: 'origem_id',
+                                destino: 'destino_id',
+                            }, render: (data, type, row) => {
+                                return `<input type="checkbox" class="form-check-input" ${data.r ? 'checked' : ""} onchange="exibirElemento('salve-${data.origem_id}-${data.destino_id}')"
+                                name="${data.origem_id}-${data.destino_id}-reverse" id="${data.origem_id}-${data.destino_id}-reverse" value="${data.r}"></input>`;
+                            }
+                        },
+                        {
+                            data: { origem: 'origem_id', destino: 'destino_id' }, render: function (data, type, row) {
+                                return `<div class="nowrap" style="padding-left:5px;">
+                                    <button class="btn btn-primary" title="Editar" id="salve-${data.origem_id}-${data.destino_id}"
+                                     style="display: none;" onclick="atualizarRota(${data.origem_id},${data.destino_id})"" ><span style="font-size:1.1em;">salvar</span></button>
+                                    <button class="btn btn-danger" title="Remover"><span style="font-size:1.1em;">Remover</span></button>
+                                    </div> `;
+                            }
+                        }
+                    ],
+                    initComplete: function () {
+                        this.api()
+                            .columns()
+                            .every(function () {
+                                // esta função percorre as colunas da tabela e verifica se há um campo de pesquisa associado a ela
+                                let column = this;
+                                let title = column.header().textContent;
+                                if (column.header().getAttribute('data-search') !== null) {
+                                    let input = document.getElementById(column.header().getAttribute(
+                                        'data-search'));
+
+                                    input.addEventListener('keyup', debounce(function () {
+                                        const value = input.value;
+                                        if (column.search() !== value) {
+                                            column.search(value).draw();
+                                        }
+                                    }, 500));
+                                }
+                            });
+                    },
+                    layout: {
+                        topStart: {
+                            buttons: [
+                                {
+                                    text: 'JSON',
+                                    className: "btn btn-primary",
+                                    action: function (e, dt, button, config) {
+                                        var data = dt.buttons.exportData();
+                                        DataTable.fileSave(new Blob([JSON.stringify(data)]), 'Export.json');
+                                    }
+                                },
+                                {
+                                    extend: 'csv',
+                                    name: "exportCSV",
+                                    text: "Exportar CSV",
+                                    className: "btn btn-primary",
+                                    exportOptions: {
+                                        columns: [0, 1, 2]
+                                    }
+
+                                },
+                                {
+                                    text: "Copiar",
+                                    className: "btn btn-primary",
+                                    action: function (e, dt, button, config) {
+                                        e.target.select();
+                                        dt.copyToClipboard();
+                                    }
+                                },
+                                {
+                                    text: "PDF",
+                                    extend: "pdf",
+                                    className: "btn btn-primary",
+                                    exportOptions: {
+                                        columns: [0, 1, 2]
+                                    }
+                                },
+                                {
+                                    text: "Baixar Rotas",
+                                    className: "btn btn-success",
+                                    action: function () {
+                                        baixarRotasJSON();
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }),
+
+                localidades: $('#tabelaLocalidades').DataTable({
+                    ...tableConfig,
+                    data: LOCALIDADES,
+                    responsive: true,
+                    searching: true,
+                    columns: [
+                        { data: 'ID', className: 'nowrap' },
+                        { data: 'LOCAL', className: 'nowrap' },
+                        { data: 'BAIRRO', className: 'nowrap' },
+                        { data: 'CIDADE', className: 'nowrap' },
+                        { data: 'UF', className: 'nowrap' },
+                        {
+                            data: "ID", className: 'nowrap', render: function (data, type, row) {
+                                return `<button class="btn btn-primary" title="Editar"><span style="font-size:1.1em;">${data}✏️</span></button>`;
+                            }
+                        }
+                    ]
+                }),
+                usuarios: $('#tabelaUsuarios').DataTable({ ...tableConfig }),
+                adicionais: $("#tabelaAdicionais").DataTable({
+                    ...tableConfig,
+                    data: ADICIONAIS,
+                    responsive: true,
+                    searching: true,
+                    layout: {
+                        topStart: {
+                            buttons: [
+                                {
+                                    extend: 'csv',
+                                    className: "btn btn-primary",
+                                    text: 'CSV',
+                                },
+                                {
+                                    extend: 'pdf',
+                                    className: "btn btn-primary",
+                                    text: 'PDF',
+                                    exportOptions: {
+                                        // Exclui a coluna "Ações" (assumindo que seja a última)
+                                        columns: [1, 2, 4, 5],
+                                        format: {
+                                            body: function (data, row, column, node) {
+                                                // Se for input, pega o valor. Senão, pega o texto puro
+                                                const input = $('input', node);
+                                                if (node && typeof node === 'object' && $(node).find('input').length > 0) {
+                                                    return $(node).find('input').val();
+                                                }
+
+                                                // Limpa quebras de linha e limita descrições longas
+                                                return $(node).text().replace(/\n/g, ' ').trim().substring(0, 60);
+                                            }
+                                        },
+                                        customize: function (doc) {
+                                            doc.styles.tableHeader.alignment = 'left';
+                                            doc.styles.tableHeader.fillColor = '#eeeeee';
+                                            doc.defaultStyle.fontSize = 10;
+                                            doc.content[1].table.widths = ['5%', '20%', '35%', '15%', '10%', '10%'];
+                                        }
+                                    }
+                                },
+                                {
+                                    text: 'Baixar Adicionais',
+                                    className: "btn btn-success",
+                                    exportOptions: {
+                                        columns: [0, 1, 2, 4]
+                                    },
+                                    action: function () {
+                                        baixarAdicionaisJSON();
+                                    }
+
+                                }
+                            ]
+                        }
+                    },
+                    columns: [
+                        { data: 'id', className: 'nowrap' },
+                        { data: 'nome', className: 'nowrap' },
+                        { data: 'descricao', className: 'nowrap' },
+                        { data: 'icone', className: 'nowrap' },
+                        { data: 'operacao', className: 'nowrap' },
+                        {
+                            data: { id: 'id', valor: 'valor' }, className: 'nowrap', render: function (data, type, row) {
+                                return `<input type="text" onchange="exibirElemento('salve-${data.id}')" class="form-control"
+                                id="adicional-${data.id}" value="${data.valor}"></input>`;
+                            }
+                        },
+                        {
+                            data: 'id', className: 'nowrap', render: function (data, type, row) {
+                                return `<div class-"actions">
+                                <button class="btn btn-primary" style="display:none;" id="salve-${data}" onclick="salvarAdicional('${data}')" title="Salvar"><span style="font-size:1.1em;"><i class="fas fa-save"></i><span></button>
+                                <button onclick="removerAdicional(${data},this)" class="btn btn-danger" title="Remover"><span style="font-size:1.1em;"><i class="fas fa-trash"></i></span></button>
+                                </div>`;
+                            }
+                        }
+                    ]
+                }),
+                relatorios: $("#tabelaRelatorios").DataTable({
+                    ...tableConfig,
+                    data: [],
+                    responsive: true,
+                    searching: true,
+                    columns: [
+                        { data: 'ID', className: 'nowrap' },
+                        { data: 'nome', className: 'nowrap' },
+                        { data: 'descricao', className: 'nowrap' },
+                        { data: 'icone', className: 'nowrap' },
+                        { data: 'operacao', className: 'nowrap' },
+                        { data: 'valor', className: 'nowrap' },
+                        {
+                            data: 'id', className: 'nowrap', render: function (data, type, row) {
+                                return `<button class="btn btn-primary" title="Editar"><span style="font-size:1.1em;">${data}✏️</span></button>`;
+                            }
+                        }
+                    ]
+                })
+            };
+
+            // Gerenciamento de tabs
+            const tabsContainer = document.getElementById('tabsContainer');
+            const tabIndicator = document.getElementById('tabIndicator');
+
+            // Função para atualizar o indicador da tab
+            function updateTabIndicator(activeTab) {
+                const tabRect = activeTab.getBoundingClientRect();
+                const containerRect = tabsContainer.getBoundingClientRect();
+
+                tabIndicator.style.width = `${tabRect.width}px`;
+                tabIndicator.style.left = `${tabRect.left - containerRect.left}px`;
+            }
+
+            // Função para trocar de tab
+            function switchTab(tabId) {
+                // Remover classe active de todas as tabs
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+
+                // Remover classe active de todos os conteúdos
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Adicionar classe active à tab selecionada
+                const activeTab = document.querySelector(`[data-tab="${tabId}"]`);
+                activeTab.classList.add('active');
+
+                // Mostrar conteúdo correspondente
+                const activeContent = document.getElementById(tabId);
+                activeContent.classList.add('active');
+
+                // Atualizar indicador
+                updateTabIndicator(activeTab);
+
+                // Redimensionar tabelas quando necessário
+                /*if (tables[tabId]) {
+                  setTimeout(() => {
+                    tables[tabId].columns.adjust().responsive.recalc();
+                  }, 100);
+                }*/
+            }
+
+            // Event listeners para as tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function () {
+                    const tabId = this.dataset.tab;
+                    switchTab(tabId);
+                });
+            });
+
+            // Inicializar indicador da tab ativa
+            const activeTab = document.querySelector('.tab.active');
+            if (activeTab) {
+                updateTabIndicator(activeTab);
+            }
+
+            // Atualizar indicador quando a janela é redimensionada
+            window.addEventListener('resize', function () {
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab) {
+                    updateTabIndicator(activeTab);
+                }
+            });
+
+            // Scroll suave para tabs em dispositivos móveis
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function () {
+                    this.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'center'
+                    });
+                });
+            });
+
+            // Função para adicionar nova tab programaticamente
+            window.addNewTab = function (tabId, tabTitle, tabContent) {
+                // Criar nova tab
+                const newTab = document.createElement('button');
+                newTab.className = 'tab';
+                newTab.dataset.tab = tabId;
+                newTab.innerHTML = tabTitle;
+                newTab.addEventListener('click', function () {
+                    switchTab(tabId);
+                });
+
+                // Adicionar tab ao container
+                tabsContainer.appendChild(newTab);
+
+                // Criar novo conteúdo
+                const newContent = document.createElement('div');
+                newContent.id = tabId;
+                newContent.className = 'tab-content';
+                newContent.innerHTML = tabContent;
+
+                // Adicionar conteúdo ao container
+                document.querySelector('.content-container').appendChild(newContent);
+
+                console.log(`Nova tab "${tabTitle}" adicionada com sucesso!`);
+            };
+
+            // Exemplo de como adicionar uma nova tab dinamicamente
+            // window.addNewTab('configuracoes', '⚙️ Configurações', '<h2 class="section-title">Configurações do Sistema</h2><div class="table-container"><p>Configurações gerais do sistema.</p></div>');
+        });
+
+        function debounce(func, wait) {
+            let timeout;
+            return function () {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+
+        const debouncedFilter = debounce(function () {
+            const value = input.value;
+            if (column.search() !== value) {
+                column.search(value).draw();
+            }
+        }, 300); // Aguarda 300ms após o usuário parar de digitar
+
+        function valideLocalidade(localidade) {
+            if (Object.keys(localidade).length < 6) return false;
+            if (localidade.ID == "") return false;
+            if (localidade.LOCAL == "") return false;
+            if (localidade.BAIRRO == "") return false;
+            if (localidade.CIDADE == "") return false;
+            if (localidade.UF == "") return false;
+            return true;
+        }
+        function enderecoLocalidade(localidade) {
+
+            let str = "";
+            str += localidade.LOCAL + ", ";
+            str += localidade.BAIRRO + ", ";
+            str += localidade.CIDADE + " - ";
+            str += localidade.UF;
+            return str;
+        }
+
+        function atualizarRota(origem, destino) {
+            const valor = parseFloat(document.getElementById(`${origem}-${destino}-valor`).value);
+            const reverse = Boolean(document.getElementById(`${origem}-${destino}-reverse`).checked);
+            const local = window.ROTAS.find(local => local.i == origem);
+            const rota = local.r.find(rota => rota[0] == destino);
+            rota[1] = valor;
+            rota[2] = reverse;
+            if (reverse) {
+                const localDestino = window.ROTAS.find(local => local.i == destino);
+                const destinoRota = localDestino.r.find(rota => rota[0] == origem)
+                destinoRota[1] = valor;
+                destinoRota[2] = reverse;
+            }
+            const novosDados = reverse ? { v: valor, r: reverse } : { r: reverse }
+            atualizarPorOrigemDestino(destino, origem, novosDados);
+            ocultarElemento(`salve-${origem}-${destino}`);
+        }
+
+        function exibirElemento(seletor) {
+            document.getElementById(seletor).style.display = "inline-block";
+        }
+        function ocultarElemento(seletor) {
+            document.getElementById(seletor).style.display = "none";
+        }
+
+        function baixarRotasJSON() {
+            try {
+                const compactado = JSON.stringify(ROTAS); // minificado
+
+                const blob = new Blob([compactado], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `rotas_${Date.now()}.txt`;
+                link.click();
+            } catch (erro) {
+                alert('Erro ao processar o JSON: ' + erro.message);
+            }
+        }
+
+        function baixarAdicionaisJSON() {
+            try {
+                const compactado = JSON.stringify(ADICIONAIS); // minificado
+                const blob = new Blob([compactado], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+
+                link.href = URL.createObjectURL(blob);
+                link.download = `adicionais_${Date.now()}.json`;
+                link.click();
+
+            } catch (erro) {
+                Swal.fire('Erro ao processar o JSON: ' + erro.message);
+            }
+        }
+
+        function salvarAdicional(id) {
+            const valor = parseFloat(document.getElementById(`adicional-${id}`).value);
+
+            window.ADICIONAIS.find(adicional => adicional.id == id).valor = valor;
+            ocultarElemento(`salve-${id}`);
+        }
+
+        async function removerAdicional(id, e) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-danger",
+                    cancelButton: "btn btn-success"
+                },
+                buttonsStyling: false
+            });
+            swalWithBootstrapButtons.fire({
+                title: "Você tem certeza?",
+                text: "Você não poderá reverter essa alteração!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sim, Deletar!",
+                cancelButtonText: "Não, cancelar!",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const row = $(`#adicional-${id}`).closest('tr');
+                    tables.adicionais.row(row).remove().draw();
+                    window.ADICIONAIS = window.ADICIONAIS.filter(adicional => adicional.id != id);
+                    swalWithBootstrapButtons.fire({
+                        title: "Deletado!",
+                        text: "Adicional deletado com sucesso",
+                        icon: "success"
+                    });
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelado",
+                        text: "Operação cancelada pelo usuário",
+                        icon: "error"
+                    });
+                }
+            });
+
+
+        }
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains("hidden")) {
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+            } else {
+                modal.classList.remove("flex");
+                modal.classList.add("hidden");
+            }
+        }
+
+        function criarAdicional() {
+            const nome = document.getElementById('nome-adicional').value;
+            const descricao = document.getElementById('descricao-adicional').value;
+            const icone = 'icone';
+            const valor = document.getElementById('valor-adicional').value;
+            const operacao = document.getElementById('operacao-adicional').value;
+            const lastID = ADICIONAIS[ADICIONAIS.length - 1].id + 1;
+            if (nome == "" || descricao == "" || icone == "" || valor == "" || operacao == "") {
+                Swal.fire({
+                    title: "Erro",
+                    text: "Todos os campos são obrigatórios",
+                    icon: "error"
+                });
+                return;
+
+            }
+            if (!lastID && ADICIONAIS.length == 0) {
+                Swal.fire({
+                    title: "Erro",
+                    text: "Não há adicional anterior para gerar o ID",
+                    icon: "error"
+                })
+                return;
+            }
+            if (!lastID) lastID = 1;
+            const adicional = {
+                id: lastID,
+                nome: nome,
+                descricao: descricao,
+                icone: icone,
+                valor: valor,
+                operacao: operacao
+            }
+            window.ADICIONAIS.push(adicional);
+            tables.adicionais.row.add(adicional).draw();
+            // Alerta usando SweetAlert2
+            Swal.fire({
+                title: "Adicional criado!",
+                text: "Adicional criado com sucesso",
+                icon: "success"
+            });
+        }
+
+        function logout() {
+            localStorage.clear()
+            sessionStorage.clear()
+            location.href = '/login.html'
+        }
+        async function limparTudoERecarregar() {
+            try {
+                // 🧹 Limpa localStorage
+                localStorage.clear();
+
+                // 🧹 Limpa sessionStorage
+                sessionStorage.clear();
+
+                // 🧹 Limpa todos os caches (Service Worker)
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+
+                // 🧹 Limpa todos os bancos IndexedDB
+                if ('indexedDB' in window) {
+                    const dbs = await indexedDB.databases();
+                    await Promise.all(dbs.map(db => indexedDB.deleteDatabase(db.name)));
+                }
+
+                // 🔁 Recarrega a página, forçando update
+                window.location.reload(true); // OBS: true é ignorado nos navegadores modernos
+            } catch (err) {
+                console.error("Erro ao limpar dados:", err);
+            }
+        }
+
+        function atualizarPorOrigemDestino(origemId, destinoId, novosDados) {
+
+            const indexes = tables.rotas.rows().indexes().toArray();
+
+            const indexAlvo = indexes.find(index => {
+                const data = tables.rotas.row(index).data();
+                return data.origem_id == origemId && data.destino_id == destinoId;
+            });
+
+            if (indexAlvo !== undefined) {
+                const row = tables.rotas.row(indexAlvo);
+                const data = row.data();
+
+                // Mescla os dados existentes com os novos
+                Object.assign(data, novosDados);
+                console.log(novosDados, data)
+
+                // Atualiza a linha no DataTable
+                row.data(data).invalidate().draw(false);
+            } else {
+                console.warn("Linha não encontrada para origem_id =", origemId, "e destino_id =", destinoId);
+            }
+        }
+    </script>
+
+</body>
+
+
+</html>

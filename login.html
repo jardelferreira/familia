@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/src/output.css">
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <div
+                    class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">Bem-vindo</h1>
+                <p class="text-gray-600 text-sm mt-2" id="client-text">Faça login em sua conta</p>
+            </div>
+
+            <!-- Formulário -->
+            <form id="loginForm" class="space-y-6">
+                <!-- Input CPF -->
+                <div>
+                    <label for="cpf" class="block text-sm font-medium text-gray-700 mb-2">
+                        CPF
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
+                            required>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V4a2 2 0 114 0v2m-4 0a2 2 0 104 0m-4 0v2m4-2v2" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Senha -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                        Senha
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" placeholder="Digite sua senha"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
+                            required>
+                        <button type="button" id="togglePassword"
+                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botão de Login -->
+                <button type="submit" id="loginButton"
+                    class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                    Entrar
+                </button>
+
+                <!-- Link Esqueci a senha -->
+                <div class="text-center">
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-700 transition-colors">
+                        Esqueci minha senha
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-6 text-sm text-gray-500">
+            <p>&copy; 2024 Sua Empresa. Todos os direitos reservados.</p>
+        </div>
+    </div>
+    <script type="module">
+        import { encrypt, decrypt } from '/js/encript.js';
+        window.encrypt = encrypt;
+        window.decrypt = decrypt;
+
+    </script>
+    <script>
+        if (sessionStorage.getItem("logado") == "true") location.href = "/gerenciador.html";
+        // Máscara para CPF
+        document.getElementById('cpf').addEventListener('input', function (e) {
+            document.getElementById("loginButton").disabled = false
+            let value = e.target.value.replace(/\D/g, '');
+
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            }
+
+            e.target.value = value;
+        });
+
+        // Toggle mostrar/ocultar senha
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/>
+                `;
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                `;
+            }
+        });
+        document.getElementById("password").addEventListener('input', function (e) {
+            document.getElementById("loginButton").disabled = false
+        });
+
+        // Validação do CPF (básica)
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length !== 11) return false;
+
+            // Verifica se todos os dígitos são iguais
+            if (/^(\d)\1{10}$/.test(cpf)) return false;
+
+            // Validação dos dígitos verificadores
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(cpf.charAt(i)) * (10 - i);
+            }
+            let resto = 11 - (soma % 11);
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(9))) return false;
+
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+                soma += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+            resto = 11 - (soma % 11);
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(10))) return false;
+
+            return true;
+        }
+
+        // Submissão do formulário
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            document.getElementById("loginButton").disabled = true
+            e.preventDefault();
+
+            const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+            const password = document.getElementById('password').value;
+
+            // Validações
+            if (!validarCPF(cpf)) {
+                alert('Por favor, digite um CPF válido.');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres.');
+                return;
+            }
+
+            fetch(`https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=getUser&cpf=${cpf}`)
+                .then(r => r.json()).then(async (data) => {
+                    console.log(data)
+                    if (data.success) {
+                        const loginSenha = await decrypt(data.data.senha);
+                        if (loginSenha === password) {
+                            alert('Login bem-sucedido!');
+                            window.location.href = 'gerenciador.html';
+                            localStorage.setItem('logado', true);
+                            const expireDate = adicionarTempo("minutos",10)
+                            localStorage.setItem('expire_at', expireDate)
+                            localStorage.setItem("user", JSON.stringify(data.data));
+                        } else {
+                            alert('Senha incorreta.');
+                        }
+                    } else {
+
+                        alert(`Erro! ${data.data}`);
+                    }
+                })
+        });
+        function adicionarTempo(unidade, quantidade, dataBase = new Date()) {
+            const msPorUnidade = {
+                minutos: 60 * 1000,
+                horas: 60 * 60 * 1000,
+                dias: 24 * 60 * 60 * 1000,
+            };
+
+            if (!msPorUnidade[unidade]) {
+                throw new Error("Unidade inválida. Use: 'minutos', 'horas' ou 'dias'.");
+            }
+
+            const novaData = new Date(dataBase.getTime() + quantidade * msPorUnidade[unidade]);
+            return novaData;
+        }
+    </script>
+</body>
+
+</html>

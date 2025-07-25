@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador e Atualizador de Rotas</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-5xl space-y-4">
+    <h1 class="text-2xl font-bold text-gray-800">Gerador e Atualizador de JSON de Rotas</h1>
+
+    <!-- Carregamento -->
+    <div id="loading" class="hidden flex items-center gap-2 text-blue-600 font-medium">
+      <svg class="animate-spin h-5 w-5 text-blue-600" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+      Carregando dados...
+    </div>
+
+    <!-- Input para JSON antigo -->
+    <label class="block">
+      <span class="text-sm font-medium text-gray-700">Subir JSON de rotas antigas:</span>
+      <input type="file" accept=".json" id="inputRotasAntigas" class="mt-1 block w-full border border-gray-300 rounded px-4 py-2" />
+    </label>
+
+    <!-- Botões -->
+    <div class="flex flex-wrap gap-3">
+      <button onclick="baixarJSON(window.rotas, 'novas_rotas')" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+        Baixar Novas Rotas
+      </button>
+      <button onclick="mesclarRotasComAntigas()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+        Atualizar com Rotas Antigas
+      </button>
+    </div>
+
+    <!-- Resultado -->
+    <pre id="output" class="bg-gray-100 p-4 rounded max-h-96 overflow-auto text-sm whitespace-pre-wrap break-words"></pre>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg hidden"></div>
+  </div>
+
+  <script>
+    let localidades = [];
+    let rotas = [];
+    let rotasAntigas = [];
+
+    // Ao carregar a página
+    document.addEventListener("DOMContentLoaded", async function () {
+      try {
+        showLoading(true);
+        localidades = await carregarLocalidades();
+        rotas = gerarRotas(localidades);
+        window.rotas = rotas;
+        atualizarOutput(rotas);
+        showToast("Rotas geradas com sucesso!");
+      } catch (err) {
+        showToast("Erro ao carregar dados!", true);
+        console.error(err);
+      } finally {
+        showLoading(false);
+      }
+    });
+
+    // Carrega o arquivo JSON com rotas antigas
+    document.getElementById('inputRotasAntigas').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          rotasAntigas = JSON.parse(e.target.result);
+          showToast('Rotas antigas carregadas com sucesso!');
+        } catch (err) {
+          showToast('Erro ao ler o arquivo JSON!', true);
+          console.error(err);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Função para baixar JSON
+    function baixarJSON(data, filename) {
+      if (!data || data.length === 0) {
+        showToast("Nenhum dado disponível para baixar", true);
+        return;
+      }
+
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${filename}_${Date.now()}.json`;
+      link.click();
+      showToast(`Arquivo ${filename} baixado com sucesso!`);
+    }
+
+    // Carrega localidades da API
+    async function carregarLocalidades() {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=localidades");
+      return res.json();
+    }
+
+    // Gera novas rotas com base nas localidades
+    function gerarRotas(localidades) {
+      return localidades.map(origem => ({
+        i: origem.ID,
+        r: localidades.map(destino => [destino.ID, 0, 1])
+      }));
+    }
+
+    // Mescla rotas novas com as antigas
+    function mesclarRotasComAntigas() {
+      if (!rotasAntigas.length) {
+        showToast("Você deve carregar um arquivo de rotas antigas primeiro.", true);
+        return;
+      }
+
+      const mapaAntigas = new Map();
+      for (const item of rotasAntigas) {
+        for (const rota of item.r) {
+          mapaAntigas.set(`${item.i}-${rota[0]}`, rota);
+        }
+      }
+
+      const rotasAtualizadas = rotas.map(novoItem => {
+        const novasRotas = novoItem.r.map(rotaNova => {
+          const chave = `${novoItem.i}-${rotaNova[0]}`;
+          const rotaAntiga = mapaAntigas.get(chave);
+          return rotaAntiga ? [...rotaAntiga] : [...rotaNova];
+        });
+
+        return {
+          i: novoItem.i,
+          r: novasRotas
+        };
+      });
+
+      window.rotas = rotasAtualizadas;
+      atualizarOutput(rotasAtualizadas);
+      showToast("Rotas atualizadas com sucesso!");
+    }
+
+    function atualizarOutput(data) {
+      document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+
+    function showLoading(show) {
+      document.getElementById("loading").style.display = show ? 'flex' : 'none';
+    }
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded shadow-lg text-white transition ${isError ? 'bg-red-600' : 'bg-green-600'}`;
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 3000);
+    }
+  </script>
+</body>
+</html>
