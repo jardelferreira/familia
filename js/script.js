@@ -491,7 +491,6 @@ class CalculadoraViagem {
             if (!rotaDestino) {
                 throw new Error("Destino não encontrado");
             }
-            console.log(rotaDestino)
             const valorBase = parseFloat(rotaDestino[1]);
             if (isNaN(valorBase) || valorBase <= 0) {
                 throw new Error("Valor inválido para esta rota");
@@ -503,7 +502,7 @@ class CalculadoraViagem {
             adicionaisSelecionados.forEach(checkbox => {
                 const indice = parseInt(checkbox.value);
                 const adicional = ADICIONAIS[indice];
-
+                
                 if (adicional && this.operacoes[adicional.operacao]) {
                     valorFinal = this.operacoes[adicional.operacao](valorFinal, adicional.valor);
                 }
@@ -617,7 +616,7 @@ class SeletorManager {
         item.innerHTML = `
                     <label class="flex items-center cursor-pointer">
                         <input type="checkbox" class="checkbox-custom mr-3 optional-check" 
-                            value="${index}" data-valor="${adicional.valor}">
+                            value="${index}" data-valor="${adicional.valor}" data-operacao="${adicional.operacao}">
                         <span class="text-sm text-gray-700">${adicional.nome}</span>
                     </label>
                     <div class="flex items-center gap-2">
@@ -779,14 +778,14 @@ class AppMobilidade {
         }
 
         const opcionais = Array.from(document.querySelectorAll('.optional-check:checked'))
-            .map(checkbox => checkbox.nextElementSibling.textContent)
-            .join(', ') || 'Nenhum';
+            .map(checkbox => `- *${checkbox.nextElementSibling.textContent}*: ${checkbox.getAttribute("data-valor")} ${checkbox.getAttribute("data-operacao")}`)
+            .join(', \n') || 'Nenhum';
 
         const mensagem = `🚌 *Consulta de Viagem*\n\n` +
             `📍 *Origem:* ${origem}\n` +
             `🎯 *Destino:* ${destino}\n` +
             `💰 *Valor:* R$ ${valor}\n` +
-            `⚙️ *Opcionais:* ${opcionais}\n\n` +
+            `⚙️ *Opcionais:*\n ${opcionais}\n` +
             `Gostaria de mais informações sobre esta viagem!`;
 
         const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagem)}`;
