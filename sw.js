@@ -1,8 +1,8 @@
 const CACHE_NAME = "pwa-tabela-v2";
 const urlsToCache = [
-  `https://jardelferreira.github.io/familia/index.html`,
-  `https://jardelferreira.github.io/familia/login.html`,
-  `https://jardelferreira.github.io/familia/register.html`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/index.html`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/login.html`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/register.html`,
   `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/js/manifest.json`,
   `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/img/icon-192.png`,
   `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/css/styles.css`,
