@@ -6,7 +6,6 @@ const urlsToCache = [
   `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/register.html`,
   `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/js/manifest.json`,
   `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/img/icon-192.png`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/img/icon-512.png`,
   `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/css/styles.css`,
   `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/css/all.css`,
   `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/img/spinner.png`,
