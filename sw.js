@@ -1,16 +1,17 @@
 const CACHE_NAME = "pwa-tabela-v2";
+const REPOSITORY_NAME = "familia"
 const urlsToCache = [
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/index.html`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/login.html`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/register.html`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/js/manifest.json`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/img/icon-192.png`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/css/styles.css`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/css/all.css`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/img/spinner.png`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/js/operacoes.js`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/js/script.js`,
-  `https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/css/src/output.css`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/index.html`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/login.html`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/register.html`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/js/manifest.json`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/img/icon-192.png`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/css/styles.css`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/css/all.css`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/img/spinner.png`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/js/operacoes.js`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/js/script.js`,
+  `https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/css/src/output.css`,
 ];
 
 // INSTALAÇÃO — cache dos arquivos essenciais
@@ -59,7 +60,7 @@ self.addEventListener("fetch", event => {
         fetch(event.request).catch(() => {
           // Fallback offline para arquivos HTML
           if (event.request.destination === 'document') {
-            return caches.match(`https://cdn.jsdelivr.net/gh/jardelferreira/familia@main/index.html`);
+            return caches.match(`https://cdn.jsdelivr.net/gh/jardelferreira/${REPOSITORY_NAME}@main/index.html`);
           }
         })
       );
