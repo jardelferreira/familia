@@ -264,7 +264,7 @@
             window.LOCALIDADES = await fetch(`https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=localidades`).then(response => response.json());
             window.LOCALIDADES = window.LOCALIDADES.filter(l => l.ID != "")
             ghUrl = 'https://cdn.jsdelivr.net/gh/jardelferreira/cincoestrelas@main'
-            window.ROTAS = await fetch(`./novas_rotas_1753381378720.json`).then(response => response.json());
+            window.ROTAS = await fetch(`./novas_rotas_1753542049259.json`).then(response => response.json());
             add = await fetch(`https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=getAdicionais&nocache=${Date.now()}`).then(response => response.json());
             window.ADICIONAIS = JSON.parse(add.data);
             window.rotasLista = [];

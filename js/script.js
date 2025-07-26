@@ -17,7 +17,7 @@ const CONFIG = {
     },
     URLS: {
         LOCAL_JSON: `https://cdn.jsdelivr.net/gh/jardelferreira/${APP_NAME}@main/localidades.json?nocache=${Date.now()}`,
-        LOCAL_ROTAS: `https://cdn.jsdelivr.net/gh/jardelferreira/${APP_NAME}@main/novas_rotas_1753381378720.json?nocache=${Date.now()}`,
+        LOCAL_ROTAS: `https://cdn.jsdelivr.net/gh/jardelferreira/${APP_NAME}@main/novas_rotas_1753542049259.json?nocache=${Date.now()}`,
         REMOTE_CSV: `https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=localidades`,
         ADICIONAIS: `https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=getAdicionais&nocache=${Date.now()}`
     },
@@ -487,7 +487,8 @@ class CalculadoraViagem {
                 throw new Error("Origem não encontrada");
             }
 
-            const rotaDestino = rotaOrigem.r[destino];
+            const rotaDestino = rotaOrigem.r.find(rota => rota[0] == destino);
+            console.log(rotaOrigem, rotaDestino, destino)
             if (!rotaDestino) {
                 throw new Error("Destino não encontrado");
             }
@@ -502,7 +503,7 @@ class CalculadoraViagem {
             adicionaisSelecionados.forEach(checkbox => {
                 const indice = parseInt(checkbox.value);
                 const adicional = ADICIONAIS[indice];
-                
+
                 if (adicional && this.operacoes[adicional.operacao]) {
                     valorFinal = this.operacoes[adicional.operacao](valorFinal, adicional.valor);
                 }
@@ -569,15 +570,15 @@ class SeletorManager {
         const rotaOrigem = ROTAS_EDITADAS.find(rota => rota.i == origemId);
         if (!rotaOrigem) return;
 
-        for (const destinoId in rotaOrigem.r) {
-            const localidade = LOCALIDADES.find(loc => loc.i == destinoId);
+        rotaOrigem.r.forEach(destino => {
+            const localidade = LOCALIDADES.find(local => local.i == destino[0]);
             if (localidade) {
                 const option = document.createElement('option');
-                option.value = destinoId;
+                option.value = destino[0];
                 option.textContent = localidade.local;
                 select.appendChild(option);
             }
-        }
+        })
 
         // Inicializar Select2 se disponível
         if (typeof $ !== 'undefined' && $.fn.select2) {
