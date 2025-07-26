@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador de Localidades e Rotas</title>
-    <link rel="stylesheet" href="/css/all.css">
+    <link rel="stylesheet" href="./css/all.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.4/css/buttons.dataTables.css"> -->
-    <link rel="stylesheet" href="/css/gerenciador.css">
+    <link rel="stylesheet" href="./css/gerenciador.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
@@ -264,7 +264,7 @@
             window.LOCALIDADES = await fetch(`https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=localidades`).then(response => response.json());
             window.LOCALIDADES = window.LOCALIDADES.filter(l => l.ID != "")
             ghUrl = 'https://cdn.jsdelivr.net/gh/jardelferreira/cincoestrelas@main'
-            window.ROTAS = await fetch(`/novas_rotas_1753381378720.json`).then(response => response.json());
+            window.ROTAS = await fetch(`./novas_rotas_1753381378720.json`).then(response => response.json());
             add = await fetch(`https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=getAdicionais&nocache=${Date.now()}`).then(response => response.json());
             window.ADICIONAIS = JSON.parse(add.data);
             window.rotasLista = [];
@@ -283,7 +283,7 @@
                 }
             });
 
-            const dtLanguage = await fetch(`/js/datatable_pt-BR.json`).then(response => response.json());
+            const dtLanguage = await fetch(`./js/datatable_pt-BR.json`).then(response => response.json());
 
             const tableConfig = {
                 responsive: true,
