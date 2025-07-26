@@ -9,12 +9,12 @@
   "theme_color": "#EC2C04",
   "icons": [
     {
-      "src": "../img/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "../img/icon-jf.png",
+      "src": "icon-jf.png",
       "sizes": "512x512",
       "type": "image/png"
     }
