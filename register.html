@@ -69,11 +69,12 @@
 
                     if (usuario.success) {
                         setBotaoEstado(false);
-                        return Swal.fire({
+                        Swal.fire({
                             icon: 'error',
                             title: 'CPF já cadastrado',
                             text: 'O CPF informado já está vinculado a um usuário.',
                         });
+                        return;
                     }
 
                     const senhaCriptografada = await encrypt(senha);
@@ -92,20 +93,22 @@
 
                     setBotaoEstado(false);
 
-                    return Swal.fire({
+                    Swal.fire({
                         icon: 'success',
                         title: 'Registro concluído',
                         text: 'Usuário cadastrado com sucesso!',
                     });
+                    return;
 
                 } catch (error) {
                     console.error("Erro ao registrar:", error);
                     setBotaoEstado(false);
-                    return Swal.fire({
+                    Swal.fire({
                         icon: 'error',
                         title: 'Erro ao registrar',
                         text: 'Não foi possível concluir o registro. Tente novamente mais tarde.',
                     });
+                    return;
                 }
             });
 
