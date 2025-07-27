@@ -185,7 +185,7 @@
                             alert('Login bem-sucedido!');
                             window.location.href = 'gerenciador.html';
                             localStorage.setItem('logado', true);
-                            const expireDate = adicionarTempo("minutos",10)
+                            const expireDate = adicionarTempo("horas",3)
                             localStorage.setItem('expire_at', expireDate)
                             localStorage.setItem("user", JSON.stringify(data.data));
                         } else {

@@ -488,7 +488,6 @@ class CalculadoraViagem {
             }
 
             const rotaDestino = rotaOrigem.r.find(rota => rota[0] == destino);
-            console.log(rotaOrigem, rotaDestino, destino)
             if (!rotaDestino) {
                 throw new Error("Destino não encontrado");
             }
