@@ -54,7 +54,7 @@
                 <a id="registrar_link" target="_blank"
                     style="margin-top: 20px; margin-bottom: 20px; color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; ">Registrar
                 </a>
-                <a id="senha_link" target="_blank" href="/keygen.html"
+                <a id="senha_link" target="_blank" href="./keygen.html"
                     style="margin-top: 20px; margin-left: 20px; margin-bottom: 20px; color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; ">Gerar
                     senha </a>
             </div>
@@ -247,7 +247,7 @@
         $(document).ready(async function () {
             let expire = new Date(localStorage.getItem('expire_at'));
             localStorage.setItem('expire_at', expire.toISOString());
-            document.getElementById('registrar_link').href = `/register.html?invite_id=123456&expire_at=${expire.toISOString()}`;
+            document.getElementById('registrar_link').href = `./register.html?invite_id=123456&expire_at=${expire.toISOString()}`;
             setInterval(() => {
                 expire = localStorage.getItem('expire_at');
                 if (expire) {
