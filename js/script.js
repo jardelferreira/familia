@@ -17,7 +17,7 @@ const CONFIG = {
     },
     URLS: {
         LOCAL_JSON: `https://cdn.jsdelivr.net/gh/jardelferreira/${APP_NAME}@main/localidades.json?nocache=${Date.now()}`,
-        LOCAL_ROTAS: `https://cdn.jsdelivr.net/gh/jardelferreira/${APP_NAME}@main/novas_rotas_1753636365974.json?nocache=${Date.now()}`,
+        LOCAL_ROTAS: `https://cdn.jsdelivr.net/gh/jardelferreira/${APP_NAME}@main/novas_rotas_1753665469340.json?nocache=${Date.now()}`,
         REMOTE_CSV: `https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=localidades`,
         ADICIONAIS: `https://script.google.com/macros/s/AKfycbz5Cj8mcYEfHtrGwER4xZEVT_xDe7ov4sth7m3hgaB30-6n-9DqcuZZW5UZyPW1pRhc/exec?action=getAdicionais&nocache=${Date.now()}`
     },
